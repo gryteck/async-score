@@ -1,0 +1,11 @@
+aiohttp==3.9.5
+asyncpg==0.29.0
+alembic==1.13.2
+fastapi==0.111.0
+gunicorn==22.0.0
+pydantic==2.7.1
+pydantic-core==2.18.2
+pydantic-settings==2.2.1
+python-dotenv==1.0.1
+uvicorn==0.29.0
+SQLAlchemy~=2.0.31

@@ -1,0 +1,45 @@
+version: "3.5"
+name: app_service
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - app_net
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    networks:
+      - app_net
+    depends_on:
+      - app
+    ports:
+      - "8081:81"
+
+  postgres:
+    image: postgres:16
+    env_file: .env
+    networks:
+      - app_net
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $POSTGRES_DB -U $POSTGRES_USER" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./postgres/data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+networks:
+  app_net:
+    name: app_net
