@@ -51,8 +51,9 @@ class KafkaAsyncClient:
         async for msg in self.consumer:
             msg = json.loads(msg.value)
             message = Messages(**msg)
+            await self.logs_service.add_from_kafka(message)
+            await self.run_service.add_from_kafka(message)
             print(f"Получено сообщение: {msg.value.decode('utf-8')}")
-
 
     async def stop_consumer(self):
         if self.consumer:

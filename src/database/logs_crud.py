@@ -40,7 +40,7 @@ class LogsCRUD:
 
             query = (  # Получение данных с учетом пагинации
                 select(Logs.__table__.columns)
-                .filter_by(client_id=client_id)
+                .filter_by(run_id=run_id)
                 .order_by(Logs.created_at.desc())
                 .offset((page_num - 1) * page_size)
                 .limit(page_size)
@@ -53,29 +53,6 @@ class LogsCRUD:
             "current_page": page_num,
             "logs": logs
         }
-
-    async def get_mass_market_upload_logs(self):
-        async with async_qbbi_engine.connect() as ms_conn:
-            query = """SELECT TOP (30) *
-            FROM [Import].[dbo].[logsImport_S1]
-            ORDER BY log_time DESC"""
-
-            result = (await ms_conn.execute(text(query))).fetchall()
-        await async_qbo_engine.dispose()
-
-        log_list = []
-        for row in result:
-            log_list.append(
-                {
-                    "log_time": row.log_time.isoformat() if row.log_time else None,
-                    "log_text": row.log_text,
-                    "paramsFolder": row.paramsFolder,
-                    "paramsFile": row.paramsFile,
-                    "params": row.params,
-                    "is_finish_log": row.is_finish_log,
-                }
-            )
-        return log_list
 
     async def add_log(self, **kwargs):
         async with async_session_maker() as session:

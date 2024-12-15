@@ -17,7 +17,7 @@ class RunsService:
 
     async def add(self, run_data: Run):
         await self.runs_crud.add(**run_data.model_dump())
-        return await self.get_run(run_data.id)
+        return await self.get_run(run_data.run_id)
 
     async def update(self, run_id: int, run_data: Run):
         await self.runs_crud.update(run_id, **run_data.model_dump(exclude_unset=True))
@@ -27,8 +27,7 @@ class RunsService:
         run = await self.runs_crud.get_by_id(run_id)
         return run.result
 
-
-    async def insert_from_kafka(self, msg: Messages):
+    async def add_from_kafka(self, msg: Messages):
         if msg.status == Status.scheduled.value:
             run = Run(
                 run_id=msg.run_id,

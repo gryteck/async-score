@@ -1,6 +1,6 @@
 import enum
 import uuid
-from datetime import datetime, timedelta, timezone
+from datetime import datetime
 
 from pydantic import BaseModel
 

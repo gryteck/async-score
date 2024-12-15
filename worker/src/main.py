@@ -26,7 +26,7 @@ async def main():
             await asyncio.sleep(1)
 
         logging.warning("Closing Kafka server...")
-    except Exception as e:
+    except Exception:
         consumer.close()
 
 

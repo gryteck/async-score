@@ -1,6 +1,3 @@
-from starlette.exceptions import HTTPException
-from starlette import status
-
 from src.database.logs_crud import LogsCRUD
 from src.models.logs import Log, LogResponse, LogsListResponse
 from src.models.messages import Messages

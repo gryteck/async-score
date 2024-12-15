@@ -3,7 +3,6 @@ import uuid
 
 from fastapi import APIRouter, Depends, status
 
-from src.models.logs import LogResponse, LogsListResponse
 from src.services.calculate import CalculateService
 from src.services.runs import RunsService
 
@@ -22,6 +21,7 @@ run_service = RunsService()
 )
 async def get_logs_list(result: float = Depends(run_service.get_result)):
     return {"score": result}
+
 
 @router.post(
     "/calc/",
