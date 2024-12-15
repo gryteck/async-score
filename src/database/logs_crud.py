@@ -1,7 +1,7 @@
 import logging
 
 from fastapi import HTTPException, status
-from sqlalchemy import func, insert, select, text
+from sqlalchemy import func, insert, select
 
 from src.database.models import Logs
 from src.models.logs import LogResponse
