@@ -1,0 +1,12 @@
+[tool.black]
+line-length = 100
+diff = true
+
+[tool.flake8]
+ignore = ['E131']
+max-line-length = 100
+exclude = './.venv'
+
+[tool.isort]
+profile = "black"
+src_paths = ["src", "app", "worker"]

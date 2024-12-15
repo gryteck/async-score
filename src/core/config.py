@@ -16,9 +16,16 @@ class Settings(BaseSettings):
 
     POSTGRES_HOST: str = Field("127.0.0.1", alias='POSTGRES_HOST')
     POSTGRES_PORT: int = Field(5432, alias='POSTGRES_PORT')
-    POSTGRES_USER: str = Field("olap", alias='POSTGRES_USER')
-    POSTGRES_PASSWORD: str = Field("0LzyD7vnZ3", alias='POSTGRES_PASSWORD')
-    POSTGRES_DB: str = Field("cup", alias='POSTGRES_DB')
+    POSTGRES_USER: str = Field("user", alias='POSTGRES_USER')
+    POSTGRES_PASSWORD: str = Field("password", alias='POSTGRES_PASSWORD')
+    POSTGRES_DB: str = Field("database", alias='POSTGRES_DB')
+
+    KAFKA_BROKER_0: str = Field("localhost:9094", alias="KAFKA_BROKER_0")
+    KAFKA_BROKER_1: str = Field("localhost:9095", alias="KAFKA_BROKER_1")
+    KAFKA_BROKER_2: str = Field("localhost:9096", alias="KAFKA_BROKER_2")
+    KAFKA_BROKER_0_LISTEN: str = Field("score_kafka_0:9092", alias="KAFKA_BROKER_0_LISTEN")
+    KAFKA_BROKER_1_LISTEN: str = Field("score_kafka_1:9092", alias="KAFKA_BROKER_1_LISTEN")
+    KAFKA_BROKER_2_LISTEN: str = Field("score_kafka_2:9092", alias="KAFKA_BROKER_2_LISTEN")
 
     @property
     def POSTGRES_URL(self):
