@@ -19,9 +19,9 @@ class Status(str, enum.Enum):
 
 
 class Messages(BaseModel):
-    run_id: uuid.UUID
+    run_id: str
     cadastral_number: int
     params: dict = {}
-    status: Status
+    status: str
     run_type: RunType
     result: float | None

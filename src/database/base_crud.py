@@ -1,51 +1,44 @@
-from sqlalchemy import select, insert, update, delete
-from src.utils.postgre_client import Base
+from sqlalchemy import delete, insert, select, update
 
 from src.utils.postgre_client import async_session_maker
 
 
 class BaseCRUD:
-    model = Base
+    model = None
 
-    @classmethod
-    async def add(cls, **kwargs):
+    async def add(self, **kwargs):
         async with async_session_maker() as session:
-            query = insert(cls.model).values(**kwargs)
+            query = insert(self.model).values(**kwargs)
             await session.execute(query)
             await session.commit()
 
-    @classmethod
-    async def update(cls, model_id, **kwargs):
+    async def update(self, model_id, **kwargs):
         async with async_session_maker() as session:
-            query = update(cls.model).where(cls.model.id == model_id).values(**kwargs)
+            query = update(self.model).filter_by(id=model_id).values(**kwargs)
             await session.execute(query)
             await session.commit()
 
-    @classmethod
-    async def delete(cls, model_id, **kwargs):
+    async def delete(self, model_id: int, **kwargs):
         async with async_session_maker() as session:
-            query = delete(cls.model).where(cls.model.id == model_id)
+            query = delete(self.model).filter_by(id=model_id)
             await session.execute(query)
             await session.commit()
 
-    @classmethod
-    async def get_by_id(cls, model_id) -> model:
+    async def get_by_id(self, model_id):
         async with async_session_maker() as session:
-            query = select(cls.model).filter_by(id=model_id)
+            query = select(self.model).filter_by(id=model_id)
             result = await session.execute(query)
             return result.scalar_one_or_none()
 
-    @classmethod
-    async def get_one_or_none(cls, **kwargs) -> model:
+    async def get_one_or_none(self, **kwargs) -> model:
         async with async_session_maker() as session:
-            query = select(cls.model).filter_by(**kwargs)
+            query = select(self.model).filter_by(**kwargs)
             result = await session.execute(query)
             return result.scalar_one_or_none()
 
-    @classmethod
-    async def find_all(cls, **kwargs):
+    async def find_all(self, **kwargs):
         async with async_session_maker() as session:
-            query = select(cls.model).filter_by(**kwargs).order_by(cls.model.id.asc())
+            query = select(self.model).filter_by(**kwargs).order_by(self.model.id.asc())
 
             result = await session.execute(query)
             return result.scalars().all()

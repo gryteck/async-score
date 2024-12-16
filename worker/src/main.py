@@ -21,7 +21,7 @@ async def main():
 
             if msg:
                 msg = Messages(**msg.value)
-
+                logging.warning(f"Started processing message {msg.run_id}")
                 await calculate_service.process(msg)
             await asyncio.sleep(1)
 

@@ -1,3 +1,5 @@
+import logging
+
 from src.database.logs_crud import LogsCRUD
 from src.models.logs import Log, LogResponse, LogsListResponse
 from src.models.messages import Messages
@@ -23,6 +25,7 @@ class LogsService:
         await self.logs_crud.add_log(**log_data.model_dump())
 
     async def add_from_kafka(self, msg: Messages):
+        logging.info("Starting adding log in db")
         log = Log(
             cadastral_number=msg.cadastral_number,
             run_id=msg.run_id,

@@ -1,4 +1,7 @@
+import logging
 import uuid
+
+from starlette.exceptions import HTTPException
 
 from src.models.cadastral import CadastralParams
 from src.models.messages import Messages
@@ -17,7 +20,7 @@ class CalculateService:
             "longitude": data.longitude,
         }
         message = Messages(
-            run_id=run_id,
+            run_id=str(run_id),
             cadastral_number=data.cadastral_number,
             params=params,
             status=Status.scheduled.value,
@@ -31,9 +34,10 @@ class CalculateService:
         try:
             # Отправляем сообщение
             await self.kafka_client.send_message("score", msg.run_id, msg.model_dump())
-            print(f"Message sent to topic 'score' with key '{msg.run_id}': {msg.model_dump()}")
+            logging.info(f"Message sent to topic 'score' with key '{msg.run_id}': {msg.model_dump()}")
         except Exception as e:
-            print(f"Failed to send message: {e}")
+            logging.info(f"Failed to send message: {e}")
+            raise HTTPException(status_code=500, detail=str(e))
         finally:
             # Завершаем работу продюсера
             await self.kafka_client.stop_producer()

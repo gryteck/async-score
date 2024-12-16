@@ -8,9 +8,8 @@ from src.models.runs import Status
 
 class Log(BaseModel):
     cadastral_number: int
-    run_id: uuid.UUID | None
+    run_id: str | None
     status: Status
-    message: str | None
     error_message: str = ""
 
 

@@ -1,4 +1,6 @@
 import json
+import logging
+import uuid
 
 from aiokafka import AIOKafkaProducer, AIOKafkaConsumer
 
@@ -34,23 +36,32 @@ class KafkaAsyncClient:
         Передаем group_id для сохранения смещений между перезапусками
         """
         self.consumer = AIOKafkaConsumer(
-            topic,
             bootstrap_servers=self.servers,
-            auto_offset_reset=offset,
-            consumer_timeout_ms=500,
+            client_id=f"something-{uuid.uuid4()}",
             group_id=group_id,
-            enable_auto_commit=True,  # Enable auto commit for simplicity
-            heartbeat_interval_ms=30000,  # Adjust as needed
-            session_timeout_ms=60000,  # Adjust as needed
+            # auto_offset_reset=offset,
+            # consumer_timeout_ms=500,
+            # enable_auto_commit=True,  # Enable auto commit for simplicity
+            # heartbeat_interval_ms=30000,  # Adjust as needed
+            # session_timeout_ms=60000,  # Adjust as needed
             value_deserializer=lambda v: json.loads(v.decode("utf-8")),
         )
+        logging.warning("Consumer created...")
+
+        self.consumer.subscribe(topic)
+        logging.warning(f"Consumer subscribed the {topic} topics")
+
         await self.consumer.start()
+        logging.warning("Consumer started...")
+
         return self.consumer
 
     async def consume_messages(self):
+        logging.info(f"Consumer started recieving messages:")
         async for msg in self.consumer:
-            msg = json.loads(msg.value)
-            message = Messages(**msg)
+            logging.info(f"Recieved message: {msg}")
+            # msg = json.loads(msg.value)
+            message = Messages(**msg.value)
             await self.logs_service.add_from_kafka(message)
             await self.run_service.add_from_kafka(message)
             print(f"Получено сообщение: {msg.value.decode('utf-8')}")
